@@ -24,8 +24,12 @@
 #	Constants
 ################################################################################################################################
 		
-		const TABLE_NAME = "z:site:users";
-
+		private const TABLE_NAME 	= "users";
+		
+		private const MYSQL_HOST 	= "localhost";
+		private const MYSQL_USER 	= "username";
+		private const MYSQL_PASS 	= "password";
+		private const MYSQL_DB 		= "database";
 
 ################################################################################################################################
 #	Setup Methods
@@ -37,6 +41,9 @@
 		# -------------------------------------------------------------------------------------------------
 		
 			public function __construct($user_email=false,$user_pass=false){
+				
+				// setup mysqli database handler (dbh)
+				$this->dbh = new mysqli(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
 				
 				// if user_email isnt present and $_POST exists, create the user
 				if(!$user_email && $_POST['password_confirm']) $this->registerUser($_POST); 
@@ -77,7 +84,7 @@
 				
 				// check if user is in the database				
 				
-				$user = $this->returnResult("SELECT * FROM `".self::TABLE_NAME."` WHERE email = '{$user_email}' AND password = '{$user_pass}' LIMIT 1");
+				$user = $this->dbh->query("SELECT * FROM `".self::TABLE_NAME."` WHERE email = '{$user_email}' AND password = '{$user_pass}' LIMIT 1");
 				
 				// if we find a valid user in the database, return the user object
 				if ( $user->num_rows > 0 ) {
@@ -161,7 +168,7 @@
 				$sql .= rtrim($sql_append,",");
 				
 				// create the user
-				$this->returnResult($sql);
+				$this->dbh->query($sql);
 				
 				// !!
 				// send email confirmation
@@ -229,8 +236,7 @@
 			public function hashPassword($password,$salt="3Lwfe#&"){
 				
 				return hash('whirlpool',$password.$salt);
-				//return crypt($password,$salt);
-				
+								
 			}	
 
 
@@ -241,7 +247,7 @@
 		
 			private function updateValue($key,$value){
 				
-				$this->returnResult("UPDATE `" . self::TABLE_NAME . "` SET `{$key}` = '{$value}' WHERE `id` = {$this->id}");
+				$this->dbh->query("UPDATE `" . self::TABLE_NAME . "` SET `{$key}` = '{$value}' WHERE `id` = {$this->id}");
 				
 			}	
 

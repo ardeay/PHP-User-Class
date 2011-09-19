@@ -1,16 +1,13 @@
 PHP Basic User
 ===========
 
-A simple user class that uses the $_SESSION and optional mysql database
+A simple user class that uses the $_SESSION and mysql database for storage and verification
 
 Features
 --------
 
 * Simple
 * Plug-n-play
-* Tango icons
-* Lightweight
-* Works in [A-graded desktop web browsers](http://developer.yahoo.com/yui/articles/gbs/)
 
 How to Use
 ----------
